@@ -1,0 +1,9 @@
+version: '3.7'
+services:
+    mongo:
+        container_name: dbmongo_new_instagram
+        image: mongo
+        ports:
+            - '27017:27017'
+        volumes:
+            - ./data/mongo:/data/db

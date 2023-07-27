@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { UserModule } from './user/user.module';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
-    imports: [UserModule],
+    imports: [UserModule, MongooseModule.forRoot('mongodb://localhost/dbmongo_new_instagram')],
     controllers: [],
     providers: [],
 })
