@@ -5,11 +5,19 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from './user.schema';
 import mongoose, { Model } from 'mongoose';
 import { plainToClass } from 'class-transformer';
+import { HashService } from './hash.service';
 const logger = CustomLogger('UserService');
 
 @Injectable()
 export class UserService {
-    constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+    constructor(@InjectModel(User.name) private userModel: Model<User>, private hashService: HashService) {}
+
+    async getUserByUsername(username: string): Promise<UserDto> {
+        const log = logger('getUserByUserName');
+        const user = await this.userModel.findOne({ username }).exec();
+        const userDto = await UserDto.plainToClass(UserDto, user);
+        return userDto;
+    }
 
     async login(user: UserDto) {
         const log = logger('login');
@@ -22,6 +30,7 @@ export class UserService {
     async create(user: UserDto): Promise<UserDto> {
         const log = logger('createUser');
         const newUser = new this.userModel(user);
+        newUser.password = await this.hashService.hashPassword(newUser.password);
         log('newuser:', newUser);
         const userDto = await UserDto.plainToClass(UserDto, await newUser.save());
         log('userDto:', userDto);

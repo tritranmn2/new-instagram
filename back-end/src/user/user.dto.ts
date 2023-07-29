@@ -8,6 +8,7 @@ export class UserDto extends BaseDto {
     @Length(5, 20)
     username: string;
 
+    @Expose()
     @IsNotEmpty()
     @IsStrongPassword()
     password: string;
