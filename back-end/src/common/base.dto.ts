@@ -5,8 +5,7 @@ export abstract class BaseDto {
     @Expose()
     @Transform(({ obj }) => {
         const rs = obj._id == undefined ? null : new Types.ObjectId(obj._id.toString());
-        console.log('rs:', rs);
-
+        // console.log('rs:', rs);
         return rs;
     })
     _id: ObjectId;
@@ -15,7 +14,7 @@ export abstract class BaseDto {
     createdAt: Date;
 
     @Expose()
-    deletedAt: Date;
+    updatedAt: Date;
 
     static async plainToClass<T>(cls: new () => T, plain: any): Promise<T> {
         return await plainToClass(cls, plain, { excludeExtraneousValues: true });

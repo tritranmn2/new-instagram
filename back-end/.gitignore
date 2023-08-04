@@ -28,3 +28,4 @@ lerna-debug.log*
 *.sublime-workspace
 
 /.vscode
+/list.api.txt

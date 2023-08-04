@@ -1,59 +1,57 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { UserDto } from './user.dto';
 import { UserService } from './user.service';
 import { User } from './user.schema';
 import { CustomLogger } from 'src/logger';
 import { AuthGuard } from '@nestjs/passport';
+import { Message } from 'src/type/message.type';
 const logger = CustomLogger('UserController');
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
-    // @Post('login')
-    // async login(@Body() user: UserDto) {
-    //     const log = logger('login');
-    //     return await this.userService.login(user);
-    // }
+    @Get()
+    async getAllUsers(): Promise<UserDto[]> {
+        const log = logger('getAllUsers');
+        log("I'm in");
+        return await this.userService.getAllUsers();
+    }
 
-    @Get(':username')
+    @Get('username/:username')
     async getUserByUsername(@Param('username') username: string) {
         const log = logger('getUserByUsername');
         log('username:', username);
         return await this.userService.getUserByUsername(username);
     }
-    // @UseGuards(AuthGuard('jwt'))
-    // @Post('register')
-    // async create(@Body() user: UserDto): Promise<UserDto> {
-    //     const log = logger('create');
-    //     log('user:', user);
-    //     return await this.userService.create(user);
-    // }
 
-    @Get()
-    async findAll(): Promise<UserDto[]> {
-        const log = logger('findAll');
-        // log('this');
-        return await this.userService.findAll();
-    }
-
-    @Get(':_id')
-    async findById(@Param('_id') _id: string) {
-        const log = logger('findById');
+    @Get('id/:_id')
+    async getUserById(@Param('_id') _id: string) {
+        const log = logger('getUserById');
         log('_id', _id);
-        return await this.userService.findById(_id);
+        return await this.userService.getUserById(_id);
     }
 
-    // @Put(':_id')
-    // async update(@Body() user: User): Promise<UserDto> {
-    //     const log = logger('updateUser');
-    //     // log(user);
-    //     return await this.userService.create(user);
-    // }
+    @Put('update/:_id')
+    async updateUser(@Param('_id') _id: string, @Body() user: UserDto) {
+        const log = logger('updateUser');
+        log('user:', user);
+        try {
+            const updatedInfo = await this.userService.updateUser(_id, user);
+            return new Message(HttpStatus.OK, 'Updated user success', updatedInfo);
+        } catch (error) {
+            throw new BadRequestException(new Message(HttpStatus.CONFLICT, error.message));
+        }
+    }
 
-    // @Delete(':_id')
-    // async delete(@Body() user: User): Promise<UserDto> {
-    //     const log = logger('createUser');
-    //     // log(user);
-    //     return await this.userService.create(user);
-    // }
+    @Delete('delete/:_id')
+    async deleteUser(@Param('_id') _id: string): Promise<any> {
+        const log = logger('deleteUser');
+        log('_id:', _id);
+        try {
+            const deletedInfo = await this.userService.deleteUser(_id);
+            return new Message(HttpStatus.OK, 'Deleted user success', deletedInfo);
+        } catch (error) {
+            throw new BadRequestException(new Message(HttpStatus.NOT_FOUND, error.message));
+        }
+    }
 }

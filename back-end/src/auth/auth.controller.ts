@@ -1,20 +1,26 @@
-import { Body, Controller, HttpStatus, Post, Get, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, Get, Req, UseGuards, BadRequestException } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { UserDto } from 'src/user/user.dto';
 import { UserService } from 'src/user/user.service';
 import { CustomLogger } from 'src/logger';
+import { Message } from 'src/type/message.type';
 const logger = CustomLogger('AuthController');
 
 @Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService, private userService: UserService) {}
     @Post('register')
-    async create(@Body() user: UserDto): Promise<UserDto> {
+    async create(@Body() user: UserDto): Promise<Message> {
         const log = logger('create');
         log('user:', user);
-        return await this.userService.create(user);
+        try {
+            const createdUser = await this.userService.createUser(user);
+            return new Message(HttpStatus.CREATED, 'Created user success', createdUser);
+        } catch (error) {
+            throw new BadRequestException(new Message(HttpStatus.BAD_REQUEST, error.message));
+        }
     }
 
     @Post('login')
@@ -22,7 +28,7 @@ export class AuthController {
     async login(@Body() user: UserDto) {
         const log = logger('login');
         log('user:', user);
-        return this.authService.login(user);
+        return this.authService.signAccessToken(user);
     }
 
     @Get('facebook/login')

@@ -17,8 +17,8 @@ export class AuthService {
         return null;
     }
 
-    async login(user) {
-        const log = logger('login');
+    async signAccessToken(user) {
+        const log = logger('signAccessToken');
         log('user:', user);
         const payload = {
             username: user.username,

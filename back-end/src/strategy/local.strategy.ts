@@ -6,7 +6,7 @@ import { CustomLogger } from 'src/logger';
 const logger = CustomLogger('LocalStrategy');
 
 @Injectable()
-export class LocalStrategy extends PassportStrategy(Strategy) {
+export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
     constructor(private authService: AuthService) {
         super();
     }

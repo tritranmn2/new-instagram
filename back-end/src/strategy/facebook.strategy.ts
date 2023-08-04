@@ -3,10 +3,11 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy, StrategyOptions } from 'passport-facebook';
 import { UserService } from 'src/user/user.service';
 import { CustomLogger } from 'src/logger';
+import { ConfigService } from '@nestjs/config';
 const logger = CustomLogger('FacebookStrategy');
 @Injectable()
 export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
-    constructor() {
+    constructor(private configService: ConfigService) {
         const log = logger('constructor');
         log('clientID:', process.env.APP_ID);
         log('clientSecret:', process.env.APP_SECRET);

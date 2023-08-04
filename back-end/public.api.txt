@@ -1,0 +1,22 @@
+Auth
+    Post localhost:3000/auth/register
+    Post localhost:3000/auth/login
+    Get  localhost:3000/auth/facebook/login
+    private Get localhost:3000/auth/facebook/redirect
+
+User
+    Get    localhost:3000/user                      
+    Get    localhost:3000/user/username/:username    
+    Get    localhost:3000/user/id/:_id
+    Put    localhost:3000/user/update/:_id [error]
+    Delete localhost:3000/user/delete/:_id
+
+Post
+    Post   localhost:3000/post                      
+    Get    localhost:3000/post                      
+    Get    localhost:3000/post/id/:_id
+    Get    localhost:3000/post/userId/:userId
+    Get    localhost:3000/post/filter
+    Put    localhost:3000/post/update/:_id
+    Delete localhost:3000/post/delete/:_id
+

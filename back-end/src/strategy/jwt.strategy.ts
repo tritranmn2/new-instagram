@@ -5,7 +5,7 @@ import { jwtConstants } from '../constant/jwt.constant';
 import { CustomLogger } from 'src/logger';
 const logger = CustomLogger('JwtStrategy');
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     constructor() {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -13,12 +13,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             secretOrKey: jwtConstants.secret,
         });
     }
-    async validate(payload) {
-        const log = logger('validate');
-        log('payload:', payload);
-        return {
-            userId: payload.sub,
-            username: payload.username,
-        };
-    }
+    // async validate(payload) {
+    //     const log = logger('validate');
+    //     log('payload:', payload);
+    //     return {
+    //         userId: payload.sub,
+    //         username: payload.username,
+    //     };
+    // }
 }
