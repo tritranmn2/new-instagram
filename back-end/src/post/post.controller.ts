@@ -1,4 +1,16 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, Post, Put } from '@nestjs/common';
+import {
+    BadRequestException,
+    Body,
+    ConflictException,
+    Controller,
+    Delete,
+    Get,
+    HttpStatus,
+    NotFoundException,
+    Param,
+    Post,
+    Put,
+} from '@nestjs/common';
 import { PostService } from './post.service';
 import { PostDto } from './post.dto';
 import { Post as PostContent } from './post.schema';
@@ -17,7 +29,7 @@ export class PostController {
             log('savedPost:', savedPost);
             return new Message(HttpStatus.CREATED, 'Created post success', savedPost);
         } catch (error) {
-            throw new BadRequestException(new Message(HttpStatus.CONFLICT, error.message));
+            throw new ConflictException(new Message(HttpStatus.CONFLICT, error.message));
         }
     }
 
@@ -34,6 +46,9 @@ export class PostController {
         const log = logger('getPostById');
         const post = await this.postService.getPostById(_id);
         log('post:', post);
+        if (post === null) {
+            throw new NotFoundException(new Message(HttpStatus.CONFLICT, 'Post not found'));
+        }
         return post;
     }
 
@@ -42,6 +57,9 @@ export class PostController {
         const log = logger('getPostById');
         const post = await this.postService.getPostByUserId(userId);
         log('post:', post);
+        if (post === null) {
+            throw new NotFoundException(new Message(HttpStatus.CONFLICT, 'Post not found'));
+        }
         return post;
     }
 
@@ -60,7 +78,7 @@ export class PostController {
             const updatedInfo = await this.postService.updatePost(_id, post);
             return new Message(HttpStatus.OK, 'Updated post success', updatedInfo);
         } catch (error) {
-            throw new BadRequestException(new Message(HttpStatus.CONFLICT, error.message));
+            throw new ConflictException(new Message(HttpStatus.CONFLICT, error.message));
         }
     }
 
@@ -72,7 +90,7 @@ export class PostController {
             log('deletedInfo:', deletedInfo);
             return new Message(HttpStatus.OK, 'Deleted post success', deletedInfo);
         } catch (error) {
-            throw new BadRequestException(new Message(HttpStatus.NOT_FOUND, error.message));
+            throw new NotFoundException(new Message(HttpStatus.NOT_FOUND, error.message));
         }
     }
 }

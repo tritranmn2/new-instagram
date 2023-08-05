@@ -4,6 +4,7 @@ import { Module } from '@nestjs/common';
 import { UserModule } from './user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
     imports: [
@@ -14,6 +15,7 @@ import { ConfigModule } from '@nestjs/config';
         AuthModule,
         UserModule,
         MongooseModule.forRoot('mongodb://localhost:27018/new_instagram'),
+        CommentModule,
     ],
     controllers: [],
     providers: [],

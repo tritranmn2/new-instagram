@@ -1,4 +1,16 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, Post, Put } from '@nestjs/common';
+import {
+    BadRequestException,
+    Body,
+    ConflictException,
+    Controller,
+    Delete,
+    Get,
+    HttpStatus,
+    NotFoundException,
+    Param,
+    Post,
+    Put,
+} from '@nestjs/common';
 import { UserDto } from './user.dto';
 import { UserService } from './user.service';
 import { User } from './user.schema';
@@ -21,14 +33,23 @@ export class UserController {
     async getUserByUsername(@Param('username') username: string) {
         const log = logger('getUserByUsername');
         log('username:', username);
-        return await this.userService.getUserByUsername(username);
+        const user = await this.userService.getUserByUsername(username);
+        if (user === null) {
+            throw new NotFoundException(new Message(HttpStatus.NOT_FOUND, 'User not found'));
+        }
+        return user;
     }
 
     @Get('id/:_id')
     async getUserById(@Param('_id') _id: string) {
         const log = logger('getUserById');
         log('_id', _id);
-        return await this.userService.getUserById(_id);
+
+        const user = await this.userService.getUserById(_id);
+        if (user === null) {
+            throw new NotFoundException(new Message(HttpStatus.NOT_FOUND, 'User not found'));
+        }
+        return user;
     }
 
     @Put('update/:_id')
@@ -39,7 +60,7 @@ export class UserController {
             const updatedInfo = await this.userService.updateUser(_id, user);
             return new Message(HttpStatus.OK, 'Updated user success', updatedInfo);
         } catch (error) {
-            throw new BadRequestException(new Message(HttpStatus.CONFLICT, error.message));
+            throw new ConflictException(new Message(HttpStatus.CONFLICT, error.message));
         }
     }
 
@@ -51,7 +72,7 @@ export class UserController {
             const deletedInfo = await this.userService.deleteUser(_id);
             return new Message(HttpStatus.OK, 'Deleted user success', deletedInfo);
         } catch (error) {
-            throw new BadRequestException(new Message(HttpStatus.NOT_FOUND, error.message));
+            throw new NotFoundException(new Message(HttpStatus.NOT_FOUND, error.message));
         }
     }
 }
