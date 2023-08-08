@@ -28,8 +28,9 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     ): Promise<any> {
         const log = logger('validate');
         const { name, emails } = profile;
-        log('emails:', emails);
-        log('profile:', profile);
+        log('accessToken:', accessToken);
+        // log('emails:', emails);
+        // log('profile:', profile);
         const user = {
             email: emails[0].value,
             firstName: name.givenName,
