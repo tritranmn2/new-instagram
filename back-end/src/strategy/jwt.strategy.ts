@@ -13,12 +13,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
             secretOrKey: jwtConstants.secret,
         });
     }
-    // async validate(payload) {
-    //     const log = logger('validate');
-    //     log('payload:', payload);
-    //     return {
-    //         userId: payload.sub,
-    //         username: payload.username,
-    //     };
-    // }
+    async validate(payload) {
+        const log = logger('validate');
+        log('payload:', payload);
+        return {
+            userId: payload.sub,
+            username: payload.username,
+        };
+    }
 }

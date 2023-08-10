@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 export interface ButtonSocialMediaProps {
     className: string;
     children: string;
-    // onClick?: () => void;
+    onClick?: () => void;
 }
 
 // const ButtonSocialMedia: FC<ButtonSocialMediaProps> = ({ children, onClick, className }) => {

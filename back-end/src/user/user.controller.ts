@@ -10,6 +10,7 @@ import {
     Param,
     Post,
     Put,
+    UseGuards,
 } from '@nestjs/common';
 import { UserDto } from './user.dto';
 import { UserService } from './user.service';
@@ -23,6 +24,7 @@ export class UserController {
     constructor(private readonly userService: UserService) {}
 
     @Get()
+    @UseGuards(AuthGuard('jwt'))
     async getAllUsers(): Promise<UserDto[]> {
         const log = logger('getAllUsers');
         log("I'm in");

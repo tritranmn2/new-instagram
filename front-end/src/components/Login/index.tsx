@@ -49,21 +49,27 @@ const Login: FC = () => {
     const handleFacebookLogin = async () => {
         console.log('Login with Facebook');
         try {
-            const response = await axios.get('http://localhost:3000/auth/facebook/login');
-            // window.location.href = response.data.url;
-            console.log(response.data);
+            window.open(
+                'http://localhost:3000/auth/facebook/login',
+                '',
+                'popup=yes,width=800,height=600,left=100,top=100',
+            );
+
+            // const response = await axios.get('http://localhost:3000/auth/facebook/login');
+            // // window.location.href = response.data.url;
+            // console.log(response);
             // console.log(response.data);
-            // In a real application, you may handle the response from the API accordingly
-            if (response.status === 200) {
-                toast.success(ToastMessage.LoginSuccessful, {
-                    ...toastConfig,
-                    onClose: () => {
-                        router.push('/');
-                    },
-                });
-            } else {
-                toast.error(ToastMessage.WrongCredentials, toastConfig);
-            }
+            // // In a real application, you may handle the response from the API accordingly
+            // if (response.status === 200) {
+            //     toast.success(ToastMessage.LoginSuccessful, {
+            //         ...toastConfig,
+            //         onClose: () => {
+            //             router.push('/');
+            //         },
+            //     });
+            // } else {
+            //     toast.error(ToastMessage.WrongCredentials, toastConfig);
+            // }
         } catch (error) {
             toast.error(ToastMessage.WrongCode, toastConfig);
             console.log(error);

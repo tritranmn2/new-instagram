@@ -45,12 +45,12 @@ const AuthForm: FC<AuthFormProps> = ({
                         <>
                             <p className="mt-4 text-sm mb-4 text-center">or login with</p>
                             <div className="flex gap-4 mb-6">
-                                <ButtonSocialMedia
+                                {/* <ButtonSocialMedia
                                     className="bg-red-600 hover:bg-red-700"
                                     //  onClick={handleGoogleLogin}
                                 >
                                     Google
-                                </ButtonSocialMedia>
+                                </ButtonSocialMedia> */}
                                 <ButtonSocialMedia
                                     className="bg-blue-800 hover:bg-blue-900"
                                     // onClick={handleFacebookLogin}
@@ -65,12 +65,12 @@ const AuthForm: FC<AuthFormProps> = ({
                     )}
                 </form>
                 <p className="mt-4 text-sm text-center">
-                    {type === AuthEnum.Login ? 'Do not have an account' : 'Already have an account?'}
+                    {type === AuthEnum.Login ? 'Do not have an account?' : 'Already have an account?'}
                     <Link
                         href={type === AuthEnum.Login ? `/register` : `/login`}
                         className="text-blue-500 hover:underline"
                     >
-                        {type}
+                        {type === AuthEnum.Login ? `Register` : `Login`}
                     </Link>
                 </p>
             </div>

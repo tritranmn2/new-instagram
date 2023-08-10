@@ -12,14 +12,13 @@ import {
     ConflictException,
     Redirect,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { CookieOptions, Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { UserDto } from 'src/user/user.dto';
 import { UserService } from 'src/user/user.service';
 import { CustomLogger } from 'src/logger';
 import { Message } from 'src/type/message.type';
-import { ApiResponse } from '@nestjs/swagger';
 const logger = CustomLogger('AuthController');
 
 @Controller('auth')
@@ -60,11 +59,11 @@ export class AuthController {
 
     @Get('facebook/login')
     @UseGuards(AuthGuard('facebook'))
-    @HttpCode(HttpStatus.OK)
+    // @HttpCode(HttpStatus.OK)
     async facebookLogin(@Res() res: Response) {
         const log = logger('facebookLogin');
         log('facebookLogin:', true);
-        return res.json(HttpStatus.OK);
+        // return res.json(HttpStatus.OK);
     }
 
     @Get('facebook/redirect')
@@ -73,13 +72,21 @@ export class AuthController {
     async facebookLoginRedirect(@Res() res: Response, @Req() req: Request) {
         const log = logger('facebookLoginRedirect');
         log('user:', req.user);
-        // log('user:', req.user);
-        // log('user:', typeof req.user);
-        // const encodingUser = Buffer.from(JSON.stringify(req.user)).toString('base64');
-        res.json({
-            statusCode: HttpStatus.OK,
-            data: req.user,
-        });
-        // return res.redirect(`http://localhost:3001?data=${req.user.accessToken}`);
+        const jwt = await this.authService.signAccessToken(req.user);
+        const cookieOptions = {
+            httpOnly: false,
+            sameSite: 'none',
+            secure: true,
+        } as CookieOptions;
+        res.set('authorization', jwt.access_token);
+        res.cookie('authorization', JSON.stringify(jwt.access_token));
+        res.cookie('data', JSON.stringify(req.user), cookieOptions);
+        // res.setHeader('Set-Cookie', cookie.serialize('user', JSON.stringify(req.user), cookieOptions));
+        // res.json({
+        //     // statusCode: HttpStatus.OK,
+        //     data: req.user,
+        //     // access_token: jwt.access_token,
+        // });
+        res.redirect('http://localhost:3001');
     }
 }
